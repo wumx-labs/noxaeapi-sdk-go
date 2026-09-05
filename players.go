@@ -39,6 +39,19 @@ func (m *PlayersModule) Get(ctx context.Context, uuid string) ([]byte, error) {
 	return m.http.doRaw(ctx, "GET", fmt.Sprintf("players/%s", uuid), noBody(), nil)
 }
 
+// Resolve resolves a player name to their UUID using the server's own
+// local player cache (works on both online-mode and offline-mode servers,
+// unlike Mojang's public API — the UUID returned matches whatever this
+// server actually uses for that player's stats/economy/etc). Checks
+// currently online players first, then falls back to the server's offline
+// player cache. Returns an *APIError with a 404 status if no known player
+// with that name has ever joined.
+func (m *PlayersModule) Resolve(ctx context.Context, name string) (PlayerResolveResult, error) {
+	var out PlayerResolveResult
+	err := m.http.doJSON(ctx, "GET", fmt.Sprintf("players/resolve/%s", name), noBody(), nil, &out)
+	return out, err
+}
+
 // GetInventory returns a player's inventory in a specific world.
 func (m *PlayersModule) GetInventory(ctx context.Context, playerUUID, worldUUID string) ([]InventoryItem, error) {
 	var out []InventoryItem

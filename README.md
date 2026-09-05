@@ -50,6 +50,18 @@ func main() {
 
 	log.Printf("%s has $%.2f", players[0].DisplayName, balance.Balance)
 	client.Server.Broadcast(ctx, "Hello from the Go SDK!")
+
+	// Resolve a name to a UUID, then get their one-call profile (identity,
+	// ban/whitelist status, Vault balance, and every leaderboard entry at once).
+	resolved, err := client.Players.Resolve(ctx, "NoxlyDev")
+	if err != nil {
+		log.Fatal(err)
+	}
+	profile, err := client.Leaderboards.GetPlayerProfile(ctx, resolved.UUID)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("banned: %v, whitelisted: %v", profile.Status.Ban.Banned, profile.Status.Whitelisted)
 }
 ```
 

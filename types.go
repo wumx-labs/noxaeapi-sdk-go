@@ -35,6 +35,13 @@ type OfflinePlayer struct {
 	LastPlayed  int64    `json:"lastPlayed"`
 }
 
+// PlayerResolveResult is the result of resolving a player name to their
+// UUID via PlayersModule.Resolve.
+type PlayerResolveResult struct {
+	Name string `json:"name"`
+	UUID string `json:"uuid"`
+}
+
 type ServerHealth struct {
 	CPUs        int64 `json:"cpus"`
 	Uptime      int64 `json:"uptime"`
@@ -205,6 +212,68 @@ type LeaderboardEntry struct {
 	UUID  string  `json:"uuid"`
 	Name  string  `json:"name"`
 	Value float64 `json:"value"`
+}
+
+// PlayerProfileBan is the ban status for a player, as reported by
+// PlayerProfile.Status.Ban.
+type PlayerProfileBan struct {
+	Banned bool `json:"banned"`
+	// Reason, Source, Created, and Expires are only present when Banned is
+	// true. Created/Expires are serialized server-side as a locale-formatted
+	// date string, not ISO-8601. A nil Expires with Banned true means a
+	// permanent ban.
+	Reason  *string `json:"reason,omitempty"`
+	Source  *string `json:"source,omitempty"`
+	Created *string `json:"created,omitempty"`
+	Expires *string `json:"expires,omitempty"`
+}
+
+// PlayerProfileStatus is the whitelist + ban status for a player, as
+// reported by PlayerProfile.Status.
+type PlayerProfileStatus struct {
+	Whitelisted bool             `json:"whitelisted"`
+	Ban         PlayerProfileBan `json:"ban"`
+}
+
+// PlayerProfileEconomy is a player's Vault economy info, as reported by
+// PlayerProfile.Economy. Single-currency (Vault), not ExcellentEconomy's
+// multi-currency system — see EconomyModule.GetCurrencyBalance for that.
+type PlayerProfileEconomy struct {
+	Available bool `json:"available"`
+	// Balance is only present when Available is true.
+	Balance *float64 `json:"balance,omitempty"`
+}
+
+// PlayerProfileStatTile is one leaderboard source's contribution to a
+// player profile's Stats slice.
+type PlayerProfileStatTile struct {
+	ID     string `json:"id"`
+	Label  string `json:"label"`
+	Status string `json:"status"` // "ranked" | "not_ranked" | "unavailable"
+	// Value is only present when Status is "ranked".
+	Value *float64 `json:"value,omitempty"`
+	// Rank is only present when Status is "ranked" and the source reports a positive rank.
+	Rank *int64 `json:"rank,omitempty"`
+}
+
+// PlayerProfile is a one-call player profile combining identity,
+// whitelist/ban status, Vault balance, and this player's entry in every
+// registered leaderboard source. Returned by LeaderboardModule.GetPlayerProfile
+// and (as the Players slice) by LeaderboardModule.GetPlayerProfiles.
+type PlayerProfile struct {
+	Name    *string                 `json:"name"`
+	UUID    string                  `json:"uuid"`
+	Online  bool                    `json:"online"`
+	Status  PlayerProfileStatus     `json:"status"`
+	Economy PlayerProfileEconomy    `json:"economy"`
+	Stats   []PlayerProfileStatTile `json:"stats"`
+}
+
+// PlayerProfilesResponse is the response shape of
+// LeaderboardModule.GetPlayerProfiles (bulk player profiles).
+type PlayerProfilesResponse struct {
+	Count   int64           `json:"count"`
+	Players []PlayerProfile `json:"players"`
 }
 
 type NetworkServerStatus struct {
