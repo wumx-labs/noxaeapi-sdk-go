@@ -10,7 +10,7 @@ import (
 // ServerModule covers server-wide operations: liveness, live info, console
 // commands, ops, whitelist, restart, logs, entities/chunks, IP bans,
 // scoreboards, and chat. Access via Client.Server.
-type ServerModule struct{ http *httpEngine }
+type ServerModule struct{ http requester }
 
 // Ping is a basic liveness check.
 func (m *ServerModule) Ping(ctx context.Context) (map[string]string, error) {

@@ -21,6 +21,7 @@ type Client struct {
 	http *httpEngine
 
 	Players      *PlayersModule
+	Identity     *IdentityModule
 	Economy      *EconomyModule
 	Server       *ServerModule
 	Worlds       *WorldsModule
@@ -32,6 +33,25 @@ type Client struct {
 	Skills       *SkillsModule    // requires mcMMO and/or AuraSkills loaded on the target server
 	Leaderboards *LeaderboardModule
 	Network      *NetworkModule // requires network.enabled: true in the server config
+
+	Integrations    *IntegrationsModule
+	AuthMe          *AuthMeModule
+	FastLogin       *FastLoginModule
+	NLogin          *NLoginModule
+	LoginSecurity   *LoginSecurityModule
+	BetterTeams     *BetterTeamsModule
+	Essentials      *EssentialsModule
+	GriefPrevention *GriefPreventionModule
+	DiscordSRV      *DiscordSRVModule
+	PlayerPoints    *PlayerPointsModule
+	WorldGuard      *WorldGuardModule
+	Plan            *PlanModule
+	Geyser          *GeyserModule
+	MythicMobs      *MythicMobsModule
+	Tab             *TabModule
+	CoreProtect     *CoreProtectModule
+	ShopGui         *ShopGuiModule
+	RankForge       *RankForgeModule
 }
 
 // NewClient creates a Client from options.
@@ -40,20 +60,40 @@ func NewClient(opts ClientOptions) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	integrations := newIntegrationsModule(h)
 	return &Client{
-		http:         h,
-		Players:      &PlayersModule{h},
-		Economy:      &EconomyModule{h},
-		Server:       &ServerModule{h},
-		Worlds:       &WorldsModule{h},
-		Plugins:      &PluginsModule{h},
-		Advancements: &AdvancementsModule{h},
-		Placeholders: &PlaceholdersModule{h},
-		LuckPerms:    &LuckPermsModule{h},
-		NoxAuth:      &NoxAuthModule{h},
-		Skills:       &SkillsModule{h},
-		Leaderboards: &LeaderboardModule{h},
-		Network:      &NetworkModule{h},
+		http:            h,
+		Players:         &PlayersModule{h},
+		Identity:        &IdentityModule{h},
+		Economy:         &EconomyModule{h},
+		Server:          &ServerModule{h},
+		Worlds:          &WorldsModule{h},
+		Plugins:         &PluginsModule{h},
+		Advancements:    &AdvancementsModule{h},
+		Placeholders:    &PlaceholdersModule{h},
+		LuckPerms:       &LuckPermsModule{h},
+		NoxAuth:         &NoxAuthModule{h},
+		Skills:          &SkillsModule{h},
+		Leaderboards:    &LeaderboardModule{h},
+		Network:         &NetworkModule{h},
+		Integrations:    integrations,
+		AuthMe:          integrations.AuthMe,
+		FastLogin:       integrations.FastLogin,
+		NLogin:          integrations.NLogin,
+		LoginSecurity:   integrations.LoginSecurity,
+		BetterTeams:     integrations.BetterTeams,
+		Essentials:      integrations.Essentials,
+		GriefPrevention: integrations.GriefPrevention,
+		DiscordSRV:      integrations.DiscordSRV,
+		PlayerPoints:    integrations.PlayerPoints,
+		WorldGuard:      integrations.WorldGuard,
+		Plan:            integrations.Plan,
+		Geyser:          integrations.Geyser,
+		MythicMobs:      integrations.MythicMobs,
+		Tab:             integrations.Tab,
+		CoreProtect:     integrations.CoreProtect,
+		ShopGui:         integrations.ShopGui,
+		RankForge:       integrations.RankForge,
 	}, nil
 }
 
@@ -105,6 +145,13 @@ func NewNetworkHubClientFromEnv() (*NetworkHubClient, error) {
 		return nil, &ConfigError{Message: "NewNetworkHubClientFromEnv: NOXAEAPI_HUB_BASE_URL is not set"}
 	}
 	return NewNetworkHubClient(ClientOptions{BaseURL: baseURL, APIKey: os.Getenv("NOXAEAPI_HUB_KEY")})
+}
+
+// Node returns a HubNodeClient scoped to a specific backend server node ID,
+// allowing all resource modules (Players, Economy, Integrations, etc.) to be
+// called transparently forwarded through the hub proxy.
+func (c *NetworkHubClient) Node(id string) *HubNodeClient {
+	return newHubNodeClient(c.http, id)
 }
 
 // BaseURL returns the configured hub base URL.

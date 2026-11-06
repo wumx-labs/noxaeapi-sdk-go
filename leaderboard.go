@@ -17,7 +17,7 @@ import (
 // (/v1/players/{uuid}/profile and /v1/players/profiles), which live
 // server-side alongside the leaderboard sources since they're built on top
 // of them.
-type LeaderboardModule struct{ http *httpEngine }
+type LeaderboardModule struct{ http requester }
 
 // List returns every registered leaderboard source and its availability.
 func (m *LeaderboardModule) List(ctx context.Context) ([]LeaderboardSourceInfo, error) {

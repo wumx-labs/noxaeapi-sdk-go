@@ -6,7 +6,7 @@ import (
 )
 
 // SkillsModule wraps the /v1/skills/* routes (mcMMO / AuraSkills). Access via Client.Skills.
-type SkillsModule struct{ http *httpEngine }
+type SkillsModule struct{ http requester }
 
 // GetMcMMOSkills returns mcMMO skill levels and power level for a player.
 // Only works for online players — returns an *APIError with a 404 status if

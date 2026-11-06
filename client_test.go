@@ -115,3 +115,71 @@ func TestRetryOn503(t *testing.T) {
 		t.Fatalf("expected 3 attempts, got %d", attempts)
 	}
 }
+
+func TestIdentityAndRankForge(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		switch r.URL.Path {
+		case "/v1/identity/resolve/Steve":
+			json.NewEncoder(w).Encode(PlayerResolveResult{Name: "Steve", UUID: "uuid-steve"})
+		case "/v1/rankforge/player/uuid-steve":
+			json.NewEncoder(w).Encode(RankForgePlayerStats{
+				UUID:   "uuid-steve",
+				Points: 1250,
+				Kills:  50,
+				Deaths: 10,
+				KD:     5.0,
+			})
+		default:
+			http.NotFound(w, r)
+		}
+	}))
+	defer srv.Close()
+
+	client, err := NewClient(ClientOptions{BaseURL: srv.URL})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	res, err := client.Identity.Resolve(context.Background(), "Steve")
+	if err != nil {
+		t.Fatalf("identity resolve failed: %v", err)
+	}
+	if res.UUID != "uuid-steve" {
+		t.Errorf("unexpected uuid: %s", res.UUID)
+	}
+
+	stats, err := client.RankForge.GetPlayerStats(context.Background(), "uuid-steve")
+	if err != nil {
+		t.Fatalf("rankforge stats failed: %v", err)
+	}
+	if stats.Points != 1250 {
+		t.Errorf("unexpected points: %d", stats.Points)
+	}
+}
+
+func TestHubNodeClientForwarding(t *testing.T) {
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.URL.Path == "/v1/network/survival/rankforge/player/uuid-1" {
+			json.NewEncoder(w).Encode(RankForgePlayerStats{UUID: "uuid-1", Points: 300})
+			return
+		}
+		http.NotFound(w, r)
+	}))
+	defer srv.Close()
+
+	hub, err := NewNetworkHubClient(ClientOptions{BaseURL: srv.URL})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	node := hub.Node("survival")
+	stats, err := node.RankForge.GetPlayerStats(context.Background(), "uuid-1")
+	if err != nil {
+		t.Fatalf("node forward failed: %v", err)
+	}
+	if stats.Points != 300 {
+		t.Errorf("unexpected points: %d", stats.Points)
+	}
+}

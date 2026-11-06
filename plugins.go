@@ -8,7 +8,7 @@ import (
 
 // PluginsModule lists installed plugins/mods, installs by URL, and toggles
 // enable/disable state. Access via Client.Plugins.
-type PluginsModule struct{ http *httpEngine }
+type PluginsModule struct{ http requester }
 
 // List returns all installed plugins/mods.
 func (m *PluginsModule) List(ctx context.Context) ([]Plugin, error) {

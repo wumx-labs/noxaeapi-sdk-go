@@ -374,3 +374,328 @@ const (
 	WeatherRain    Weather = "rain"
 	WeatherThunder Weather = "thunder"
 )
+
+// IdentityServerInfo represents a backend server known to the identity service.
+type IdentityServerInfo struct {
+	ID    string `json:"id"`
+	Label string `json:"label"`
+}
+
+// IdentityInfo is the result of resolving player identity across the network.
+type IdentityInfo struct {
+	Username        string             `json:"username"`
+	IdentityUUID    string             `json:"identityUuid"`
+	LocalUUID       *string            `json:"localUuid"`
+	Server          IdentityServerInfo `json:"server"`
+	OnlineMode      bool               `json:"onlineMode"`
+	HasPlayedBefore bool               `json:"hasPlayedBefore"`
+}
+
+// AuthMePlayerInfo contains player authentication details from AuthMe Reloaded.
+type AuthMePlayerInfo struct {
+	Name          string `json:"name"`
+	UUID          string `json:"uuid"`
+	Registered    bool   `json:"registered"`
+	Authenticated bool   `json:"authenticated"`
+	LastIP        string `json:"lastIp"`
+	LastLoginTime int64  `json:"lastLoginTime"`
+}
+
+// FastLoginPlayerInfo contains player authentication details from FastLogin.
+type FastLoginPlayerInfo struct {
+	Name    string `json:"name"`
+	UUID    string `json:"uuid"`
+	Premium bool   `json:"premium"`
+}
+
+// NLoginPlayerInfo contains player authentication details from nLogin.
+type NLoginPlayerInfo struct {
+	Name          string `json:"name"`
+	UUID          string `json:"uuid"`
+	Registered    bool   `json:"registered"`
+	Authenticated bool   `json:"authenticated"`
+}
+
+// LoginSecurityPlayerInfo contains player authentication details from LoginSecurity.
+type LoginSecurityPlayerInfo struct {
+	Name          string `json:"name"`
+	UUID          string `json:"uuid"`
+	Registered    bool   `json:"registered"`
+	Authenticated bool   `json:"authenticated"`
+}
+
+// BetterTeamsSummary contains summary info for a team in BetterTeams.
+type BetterTeamsSummary struct {
+	Name        string                 `json:"name"`
+	Tag         string                 `json:"tag"`
+	Description string                 `json:"description"`
+	Score       float64                `json:"score"`
+	Money       float64                `json:"money"`
+	Level       int64                  `json:"level"`
+	MemberCount int64                  `json:"memberCount"`
+	Extra       map[string]interface{} `json:"-"`
+}
+
+// BetterTeamsDetail contains detailed info for a team including members list.
+type BetterTeamsDetail struct {
+	BetterTeamsSummary
+	Members []string `json:"members"`
+}
+
+// BetterTeamsListResponse is the paginated response for teams listing.
+type BetterTeamsListResponse struct {
+	Page  int64                `json:"page"`
+	Limit int64                `json:"limit"`
+	Total int64                `json:"total"`
+	Teams []BetterTeamsSummary `json:"teams"`
+}
+
+// EssentialsHomeLocation contains coordinate info for an Essentials home.
+type EssentialsHomeLocation struct {
+	Name  string   `json:"name"`
+	World string   `json:"world"`
+	X     float64  `json:"x"`
+	Y     float64  `json:"y"`
+	Z     float64  `json:"z"`
+	Yaw   *float64 `json:"yaw,omitempty"`
+	Pitch *float64 `json:"pitch,omitempty"`
+}
+
+// EssentialsPlayerHomesResponse contains homes for a player from Essentials.
+type EssentialsPlayerHomesResponse struct {
+	Player string                   `json:"player"`
+	Homes  []EssentialsHomeLocation `json:"homes"`
+}
+
+// EssentialsWarpsResponse contains all configured server warps from Essentials.
+type EssentialsWarpsResponse struct {
+	Total int64    `json:"total"`
+	Warps []string `json:"warps"`
+}
+
+// EssentialsPlayerInfo contains player state info from Essentials.
+type EssentialsPlayerInfo struct {
+	Player   string  `json:"player"`
+	Nickname *string `json:"nickname,omitempty"`
+	AFK      bool    `json:"afk"`
+	Muted    bool    `json:"muted"`
+	Jailed   bool    `json:"jailed"`
+	GodMode  bool    `json:"godMode"`
+}
+
+// GriefPreventionBoundary is a 3D coordinate point.
+type GriefPreventionBoundary struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	Z float64 `json:"z"`
+}
+
+// GriefPreventionClaim represents a land claim in GriefPrevention.
+type GriefPreventionClaim struct {
+	ID              interface{}              `json:"id,omitempty"`
+	Owner           string                   `json:"owner,omitempty"`
+	OwnerUUID       string                   `json:"ownerUuid,omitempty"`
+	World           string                   `json:"world,omitempty"`
+	GreaterBoundary *GriefPreventionBoundary `json:"greaterBoundary,omitempty"`
+	LesserBoundary  *GriefPreventionBoundary `json:"lesserBoundary,omitempty"`
+	Area            *float64                 `json:"area,omitempty"`
+}
+
+// GriefPreventionClaimsResponse contains land claims owned by a player.
+type GriefPreventionClaimsResponse struct {
+	UUID   string                 `json:"uuid"`
+	Total  int64                  `json:"total"`
+	Claims []GriefPreventionClaim `json:"claims"`
+}
+
+// DiscordSRVLinkedResponse contains Discord user ID linked to a player UUID.
+type DiscordSRVLinkedResponse struct {
+	UUID      string `json:"uuid"`
+	DiscordID string `json:"discordId"`
+}
+
+// DiscordSRVBroadcastResponse contains the result of broadcasting via DiscordSRV.
+type DiscordSRVBroadcastResponse struct {
+	Success bool   `json:"success"`
+	Channel string `json:"channel"`
+	Message string `json:"message"`
+}
+
+// PlayerPointsBalanceResponse contains points balance for a player from PlayerPoints.
+type PlayerPointsBalanceResponse struct {
+	UUID   string `json:"uuid"`
+	Points int64  `json:"points"`
+}
+
+// PlayerPointsTransactionResult contains transaction result for PlayerPoints operations.
+type PlayerPointsTransactionResult struct {
+	UUID           string `json:"uuid"`
+	Amount         int64  `json:"amount"`
+	Success        bool   `json:"success"`
+	CurrentBalance int64  `json:"currentBalance"`
+}
+
+// WorldGuardRegionPoint is a 3D point for region bounds.
+type WorldGuardRegionPoint struct {
+	X float64 `json:"x"`
+	Y float64 `json:"y"`
+	Z float64 `json:"z"`
+}
+
+// WorldGuardRegion represents a region in WorldGuard.
+type WorldGuardRegion struct {
+	ID       string                 `json:"id"`
+	Type     *string                `json:"type,omitempty"`
+	Priority *int64                 `json:"priority,omitempty"`
+	Owners   []string               `json:"owners,omitempty"`
+	Members  []string               `json:"members,omitempty"`
+	Flags    map[string]interface{} `json:"flags,omitempty"`
+	Min      *WorldGuardRegionPoint `json:"min,omitempty"`
+	Max      *WorldGuardRegionPoint `json:"max,omitempty"`
+}
+
+// PlanPlayerSummary represents player analytics summary from Plan.
+type PlanPlayerSummary struct {
+	UUID  string                 `json:"uuid"`
+	Extra map[string]interface{} `json:"-"`
+}
+
+// GeyserPlayerInfo contains Bedrock info from Geyser/Floodgate.
+type GeyserPlayerInfo struct {
+	Bedrock  bool    `json:"bedrock"`
+	XUID     *string `json:"xuid,omitempty"`
+	DeviceOS *string `json:"deviceOs,omitempty"`
+	Version  *string `json:"version,omitempty"`
+}
+
+// MythicMobsListResponse lists registered custom mobs from MythicMobs.
+type MythicMobsListResponse struct {
+	Total int64    `json:"total"`
+	Mobs  []string `json:"mobs"`
+}
+
+// MythicMobSpawnOptions contains options for spawning a custom mob.
+type MythicMobSpawnOptions struct {
+	Type  string  `json:"type"`
+	World string  `json:"world"`
+	X     float64 `json:"x"`
+	Y     float64 `json:"y"`
+	Z     float64 `json:"z"`
+	Level *int64  `json:"level,omitempty"`
+}
+
+// MythicMobSpawnResponse contains the result of spawning a custom mob.
+type MythicMobSpawnResponse struct {
+	Success bool    `json:"success"`
+	Type    string  `json:"type"`
+	World   string  `json:"world"`
+	X       float64 `json:"x"`
+	Y       float64 `json:"y"`
+	Z       float64 `json:"z"`
+	Level   int64   `json:"level"`
+}
+
+// TabNametagResponse contains TAB nametag prefix and suffix.
+type TabNametagResponse struct {
+	UUID    string `json:"uuid"`
+	Prefix  string `json:"prefix"`
+	Suffix  string `json:"suffix"`
+	Success *bool  `json:"success,omitempty"`
+}
+
+// CoreProtectLookupOptions contains query parameters for CoreProtect lookup.
+type CoreProtectLookupOptions struct {
+	Time  int64  `json:"time,omitempty"`
+	User  string `json:"user,omitempty"`
+	Limit int64  `json:"limit,omitempty"`
+}
+
+// CoreProtectLookupEntry represents a single block/action history entry.
+type CoreProtectLookupEntry struct {
+	Time   *int64      `json:"time,omitempty"`
+	User   *string     `json:"user,omitempty"`
+	Action interface{} `json:"action,omitempty"`
+	Type   *string     `json:"type,omitempty"`
+	World  *string     `json:"world,omitempty"`
+	X      *float64    `json:"x,omitempty"`
+	Y      *float64    `json:"y,omitempty"`
+	Z      *float64    `json:"z,omitempty"`
+}
+
+// CoreProtectLookupResponse contains the lookup results from CoreProtect.
+type CoreProtectLookupResponse struct {
+	Total             int64                    `json:"total"`
+	TimeWindowSeconds int64                    `json:"timeWindowSeconds"`
+	UserFilter        string                   `json:"userFilter"`
+	Results           []CoreProtectLookupEntry `json:"results"`
+}
+
+// ShopGuiSummary represents basic info for a ShopGUIPlus shop.
+type ShopGuiSummary struct {
+	ID   string  `json:"id"`
+	Name *string `json:"name,omitempty"`
+}
+
+// ShopGuiListResponse lists all shops from ShopGUIPlus.
+type ShopGuiListResponse struct {
+	Total int64            `json:"total"`
+	Shops []ShopGuiSummary `json:"shops"`
+}
+
+// ShopGuiShopDetail represents full details of a specific shop.
+type ShopGuiShopDetail struct {
+	ID    string                 `json:"id"`
+	Extra map[string]interface{} `json:"-"`
+}
+
+// RankForgeTier represents a PvP tier in RankForge.
+type RankForgeTier struct {
+	Name      string                 `json:"name"`
+	MinPoints int64                  `json:"minPoints"`
+	MaxPoints *int64                 `json:"maxPoints,omitempty"`
+	Extra     map[string]interface{} `json:"-"`
+}
+
+// RankForgePlayerStats contains PvP ranking stats for a player.
+type RankForgePlayerStats struct {
+	UUID        string         `json:"uuid"`
+	Points      int64          `json:"points"`
+	Kills       int64          `json:"kills"`
+	Deaths      int64          `json:"deaths"`
+	KD          float64        `json:"kd"`
+	DailyKills  int64          `json:"dailyKills"`
+	CurrentTier *RankForgeTier `json:"currentTier"`
+	NextTier    *RankForgeTier `json:"nextTier"`
+}
+
+// RankForgePointsResponse contains points for a player from RankForge.
+type RankForgePointsResponse struct {
+	UUID   string `json:"uuid"`
+	Points int64  `json:"points"`
+}
+
+// RankForgePointsTransactionResult contains transaction result for RankForge points.
+type RankForgePointsTransactionResult struct {
+	UUID    string `json:"uuid"`
+	Points  int64  `json:"points"`
+	Success bool   `json:"success"`
+}
+
+// RankForgeTopEntry represents a leaderboard entry in RankForge.
+type RankForgeTopEntry struct {
+	Rank   int64          `json:"rank"`
+	UUID   string         `json:"uuid"`
+	Name   *string        `json:"name,omitempty"`
+	Points int64          `json:"points"`
+	Tier   *RankForgeTier `json:"tier,omitempty"`
+}
+
+// RankForgeTiersResponse contains all configured tiers from RankForge.
+type RankForgeTiersResponse struct {
+	Tiers []RankForgeTier `json:"tiers"`
+}
+
+// RankForgeSaveResponse contains the result of saving RankForge data.
+type RankForgeSaveResponse struct {
+	Success bool `json:"success"`
+}

@@ -13,7 +13,7 @@ import (
 // will 404. This is NoxAeApi-main's built-in polling aggregator: it lives
 // on the same backend server you're connected to and fans requests out to
 // the other backends listed in that server's own config.
-type NetworkModule struct{ http *httpEngine }
+type NetworkModule struct{ http requester }
 
 // StatusAll returns status (server info + online players) for every
 // configured network server, keyed by server ID.

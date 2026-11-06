@@ -47,6 +47,11 @@ type ClientOptions struct {
 	HTTPClient *http.Client
 }
 
+type requester interface {
+	doJSON(ctx context.Context, method, path string, body requestBody, query url.Values, out interface{}) error
+	doRaw(ctx context.Context, method, path string, body requestBody, query url.Values) ([]byte, error)
+}
+
 type httpEngine struct {
 	baseURL      string
 	apiKey       string

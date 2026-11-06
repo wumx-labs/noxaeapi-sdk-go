@@ -9,7 +9,7 @@ import (
 
 // EconomyModule manages player currency balances via Vault (single
 // currency) or ExcellentEconomy (multi-currency). Access via Client.Economy.
-type EconomyModule struct{ http *httpEngine }
+type EconomyModule struct{ http requester }
 
 // Info returns info about the connected economy provider (Impactor on
 // Fabric, Vault on Bukkit/Spigot/Paper).

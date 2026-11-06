@@ -14,7 +14,7 @@ import (
 //
 // Unlike most other modules, these POST/DELETE bodies are sent as real
 // JSON (the server reads them with ctx.bodyAsClass(...)), not form-urlencoded.
-type LuckPermsModule struct{ http *httpEngine }
+type LuckPermsModule struct{ http requester }
 
 // GetPlayerGroups returns the groups a player belongs to.
 func (m *LuckPermsModule) GetPlayerGroups(ctx context.Context, uuid string) ([]string, error) {

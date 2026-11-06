@@ -10,7 +10,7 @@ import (
 // PlayersModule manages online and offline players: listing, detailed
 // attributes, inventory slots, moderation, teleportation, gamemode
 // switching, and stats. Access via Client.Players.
-type PlayersModule struct{ http *httpEngine }
+type PlayersModule struct{ http requester }
 
 // Location is a teleport target for PlayersModule.Teleport.
 type Location struct {

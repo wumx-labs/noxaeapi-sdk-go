@@ -10,7 +10,7 @@ import (
 // Only works when noxauth.enabled: true is set in the server's
 // noxaeapi-config.yml and the NoxAuth plugin is installed. CheckPassword's
 // body is sent as real JSON.
-type NoxAuthModule struct{ http *httpEngine }
+type NoxAuthModule struct{ http requester }
 
 // GetPlayerAuth returns NoxAuth registration/auth info for a player by name.
 func (m *NoxAuthModule) GetPlayerAuth(ctx context.Context, name string) (NoxAuthPlayerInfo, error) {

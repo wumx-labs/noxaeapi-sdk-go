@@ -9,7 +9,7 @@ import (
 
 // WorldsModule lists, saves, downloads, and configures worlds: time,
 // weather, and entity counts. Access via Client.Worlds.
-type WorldsModule struct{ http *httpEngine }
+type WorldsModule struct{ http requester }
 
 // List returns all worlds.
 func (m *WorldsModule) List(ctx context.Context) ([]World, error) {

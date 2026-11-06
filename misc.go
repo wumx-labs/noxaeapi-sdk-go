@@ -6,7 +6,7 @@ import (
 )
 
 // AdvancementsModule lists advancements known to the server. Access via Client.Advancements.
-type AdvancementsModule struct{ http *httpEngine }
+type AdvancementsModule struct{ http requester }
 
 // List returns all advancements known to the server.
 func (m *AdvancementsModule) List(ctx context.Context) ([]Advancement, error) {
@@ -17,7 +17,7 @@ func (m *AdvancementsModule) List(ctx context.Context) ([]Advancement, error) {
 
 // PlaceholdersModule resolves PlaceholderAPI-style placeholders server-side
 // for a given player. Access via Client.Placeholders.
-type PlaceholdersModule struct{ http *httpEngine }
+type PlaceholdersModule struct{ http requester }
 
 // Replace replaces placeholders (e.g. "%player_name%") in message for a
 // player, returning the resolved string. Server-side reads form fields
