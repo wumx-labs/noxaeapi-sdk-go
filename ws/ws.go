@@ -122,7 +122,7 @@ func Connect(opts Options) (*Socket, error) {
 
 func toWSURL(baseURL, route, apiKey string) (string, error) {
 	trimmed := strings.TrimRight(baseURL, "/")
-	route = strings.TrimLeft(route, "/")
+	route = strings.Trim(route, "/")
 	raw := fmt.Sprintf("%s/v1/ws/%s", trimmed, route)
 	u, err := url.Parse(raw)
 	if err != nil {

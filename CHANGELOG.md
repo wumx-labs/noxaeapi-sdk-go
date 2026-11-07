@@ -11,6 +11,7 @@ All notable changes to `github.com/NoxlyDev/noxaeapi-sdk-go` will be documented 
 - **Integrations Suite (`IntegrationsModule`)**: Comprehensive client modules for 16 external plugins (`AuthMe`, `FastLogin`, `NLogin`, `LoginSecurity`, `BetterTeams`, `Essentials`, `GriefPrevention`, `DiscordSRV`, `PlayerPoints`, `WorldGuard`, `Plan`, `Geyser`, `MythicMobs`, `Tab`, `CoreProtect`, `ShopGui`) and `RankForge`.
 - **Identity Module (`IdentityModule`)**: Cross-server identity resolution and server listing (`Resolve`, `GetNetworkServers`, `GetNetworkPlayer`).
 - **Velocity Hub Node Forwarding (`HubNodeClient`)**: Added `hub.Node(id)` for transparent request forwarding through Velocity network hubs.
+- **Realtime WebSocket Submodule (`ws`)**: Released `ws/v0.7.0` with route sanitization, backoff validation, and automated unit testing.
 
 ## [0.4.1] - 2026-10-20
 
